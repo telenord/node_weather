@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h2.page-header Take weather
+  p Please address below
+  form(method='post', action='/')
+    .form-group
+      label Address
+      input.form-control(name='address', type='text', placeholder='Enter address')
+    button.btn.btn-primary(type='submit') Go!
+  br
+  if errorText
+    div.alert.alert-danger #{errorText}
+  if result
+    each res, i in result
+      div.alert.alert-success #{i} : #{res,  i}
+
