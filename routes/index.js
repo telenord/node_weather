@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const request = require('request');
+
+
+
+const geocode = require('../geocode/geocode');
+const weather = require('../weather/weather');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -9,31 +13,21 @@ router.get('/', function (req, res, next) {
 
 router.post('/', function (req, res, next) {
 
-  const encodedAddress = encodeURI(req.body.address);
-
-  request({
-    url: `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=AIzaSyDYpgwGNmVm1JxzdDIOSb5d6UWa54ANPBw`,
-    json: true
-
-  }, (error, response, body) => {
-    let result= '';
-    let errorText;
-    if (error) {
-      errorText = error;
-
-    } else if (body.status === 'ZERO_RESULTS') {
-      errorText = 'Unable to find that address';
+  geocode.geocodeAddress(req.body.address, (error, result)=>{
+    if (error){
+      res.render('index', {errorText: error});
     }
-    if (body.status === 'OK') {
-      result = body.results[0].geometry.location;
-    }
-    result = result ? {result} : {errorText};
+    weather.weatherFetch(result, (error, weather)=>{
+      if (error){
+        res.render('index', {errorText: error});
+      }
+      res.render('index', {weather});
+    });
 
-    console.log(result);
-
-    res.render('index', result );
+    res.render('index', result);
   });
 
-
 });
+
+
 module.exports = router;
