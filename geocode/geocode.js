@@ -8,19 +8,18 @@ const geocodeAddress = (address, cb) => {
     json: true
 
   }, (error, response, body) => {
-    let result = '';
     let errorText;
     if (error) {
-      return cb(error);
+       cb(error);
 
     } else if (body.status === 'ZERO_RESULTS') {
       errorText = 'Unable to find that address';
-      return cb(errorText);
+       cb(errorText);
     }
     if (body.status === 'OK') {
-      result = body.results[0].geometry.location;
+      cb(null, body.results[0].geometry.location);
     }
-    return cb(null, {result});
+
   });
 };
 
