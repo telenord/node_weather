@@ -6,6 +6,8 @@ const logger = require('morgan');
 const request = require('request');
 const yargs = require('yargs');
 
+//TODO add users
+
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
